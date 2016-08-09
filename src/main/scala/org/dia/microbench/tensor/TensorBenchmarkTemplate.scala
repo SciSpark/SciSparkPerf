@@ -1,4 +1,4 @@
-package org.dia.micro.tensor
+package org.dia.microbench.tensor
 
 import org.openjdk.jmh.annotations._
 import java.util.concurrent.TimeUnit

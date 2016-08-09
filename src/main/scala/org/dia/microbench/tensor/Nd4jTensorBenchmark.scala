@@ -1,4 +1,4 @@
-package org.dia.micro.tensor
+package org.dia.microbench.tensor
 
 import org.dia.tensors.Nd4jTensor
 
