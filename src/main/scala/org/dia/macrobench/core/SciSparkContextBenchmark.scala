@@ -7,7 +7,7 @@ import org.dia.core.SciSparkContext
 import org.openjdk.jmh.annotations._
 
 
-@BenchmarkMode(Array(Mode.Throughput))
+@BenchmarkMode(Array(Mode.Throughput, Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.SECONDS)
 @Warmup(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
@@ -18,12 +18,12 @@ class SciSparkContextBenchmark {
   val properties = scala.io.Source.fromFile("Properties").mkString.split("\n")
 
   var hdfsPath = properties(0)
-  var contextURI = "spark://" + properties(1) + ":7077"
+  var contextURI = properties(1)
 
   @Param(Array("100mb"))//, "1gb", "10gb", "100gb"))
   var directory : String = _
 
-  var sc : SciSparkContext = new SciSparkContext(new SparkContext(new SparkConf().setMaster("local[*]").setAppName("SciSparkContextBenchmark")))
+  var sc : SciSparkContext = new SciSparkContext(new SparkContext(new SparkConf().setMaster(contextURI).setAppName("SciSparkContextBenchmark")))
 
   @Benchmark
   def readDFS: Long = {
