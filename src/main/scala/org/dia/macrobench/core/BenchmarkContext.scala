@@ -38,7 +38,7 @@ class BenchmarkContext {
 
   val SparkContext = new SparkContext(sparkConf)
 
-  SparkContext.addJar(properties_map("scispark.jar"))
+  SparkContext.addJar("target/scala-2.10/SciSparkPerf.jar")
 
   var sc : SciSparkContext = new SciSparkContext(SparkContext)
 

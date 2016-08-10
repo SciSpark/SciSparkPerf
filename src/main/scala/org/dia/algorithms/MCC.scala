@@ -24,7 +24,7 @@ import org.dia.core.SciSparkContext
 
 object MCC {
 
-  def runMCC(sc : SciSparkContext, path : String): Array[((String, Double), (String, Double), Int)] = {
+  def runMCC(sc: SciSparkContext, path: String): Array[((String, Double), (String, Double), Int)] = {
     /**
      * Ingest the input file and construct the SRDD.
      * For MCC the sources are used to map date-indexes.
@@ -168,7 +168,6 @@ object MCC {
          * between those two components.
          */
         var overlappedMap = overlappedPairsList.groupBy(identity).mapValues(_.size)
-        println(s"Overlap Map ${overlappedMap.size}")
 
         /**
          * Once the overlapped pairs have been computed, eliminate all duplicates
@@ -177,48 +176,44 @@ object MCC {
          * consists of unique tuples.
          */
         val edgesSet = overlappedPairsList.toSet
-        println(s"Overlap SEt ${edgesSet.size}  : ") // for debugging
 
         val edges = edgesSet.map({ case (c1, c2) => ((t1.metaData("FRAME"), c1), (t2.metaData("FRAME"), c2)) })
-        println(s"Edges ${edges.size} ") // for debugging
-      val filtered = edges.filter({
-        case ((frameId1, compId1), (frameId2, compId2)) =>
-          val (area1, max1, min1) = areaMinMaxTable(frameId1 + ":" + compId1)
-          val isCloud1 = ((area1 >= 2400.0) || ((area1 < 2400.0) && ((min1/max1) < 0.9)))
-          val (area2, max2, min2) = areaMinMaxTable(frameId2 + ":" + compId2)
-          val isCloud2 = ((area2 >= 2400.0) || ((area2 < 2400.0) && ((min2/max2) < 0.9)))
-          var meetsCriteria = true
-          if(isCloud1 && isCloud2) {
-            val areaOverlap = overlappedMap.get(compId1, compId2).get
-            val percentAreaOverlap = math.max((areaOverlap / area1), (areaOverlap / area2))
-            var edgeWeight = 0
-            if (percentAreaOverlap >= maxAreaOverlapThreshold) {
-              edgeWeight = 1
+        val filtered = edges.filter({
+          case ((frameId1, compId1), (frameId2, compId2)) =>
+            val (area1, max1, min1) = areaMinMaxTable(frameId1 + ":" + compId1)
+            val isCloud1 = ((area1 >= 2400.0) || ((area1 < 2400.0) && ((min1 / max1) < 0.9)))
+            val (area2, max2, min2) = areaMinMaxTable(frameId2 + ":" + compId2)
+            val isCloud2 = ((area2 >= 2400.0) || ((area2 < 2400.0) && ((min2 / max2) < 0.9)))
+            var meetsCriteria = true
+            if (isCloud1 && isCloud2) {
+              val areaOverlap = overlappedMap.get(compId1, compId2).get
+              val percentAreaOverlap = math.max((areaOverlap / area1), (areaOverlap / area2))
+              var edgeWeight = 0
+              if (percentAreaOverlap >= maxAreaOverlapThreshold) {
+                edgeWeight = 1
+              }
+              else if (percentAreaOverlap < maxAreaOverlapThreshold &&
+                percentAreaOverlap >= minAreaOverlapThreshold) {
+                edgeWeight = 2
+              }
+              else if (areaOverlap >= minArea) {
+                edgeWeight = 3
+              }
+              else {
+                meetsCriteria = false
+              }
+              overlappedMap += (((compId1, compId2), 1))
             }
-            else if (percentAreaOverlap < maxAreaOverlapThreshold &&
-              percentAreaOverlap >= minAreaOverlapThreshold) {
-              edgeWeight = 2
-            }
-            else if (areaOverlap >= minArea) {
-              edgeWeight = 3
-            }
-            else {
-              meetsCriteria = false
-            }
-            overlappedMap += (((compId1, compId2), 1))
-          }
-          isCloud1 && isCloud2 && meetsCriteria
-      })
+            isCloud1 && isCloud2 && meetsCriteria
+        })
 
         val edgeList = new mutable.HashSet[((String, Double), (String, Double), Int)]()
         filtered.foreach(edge => {
           val key = (edge._1._2, edge._2._2)
-          if(overlappedMap.contains(key)) {
+          if (overlappedMap.contains(key)) {
             edgeList += ((edge._1, edge._2, overlappedMap(key)))
           }
         })
-        println(s"edgeList Map filetered ${edgeList.size}: $edgeList")
-        println(s"filtered Map ${filtered.size}")
         edgeList
     })
 
