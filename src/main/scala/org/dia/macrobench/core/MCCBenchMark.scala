@@ -35,27 +35,23 @@ import org.dia.core.SciSparkContext
 @State(Scope.Thread)
 class MCCBenchMark {
   @Param(Array("100mb", "1gb", "10gb", "100gb"))
-  var directory : String = _
+  var directory: String = _
 
-  var sc : SciSparkContext = _
-  var fspath : String = _
+  var sc: SciSparkContext = _
+  var fspath: String = _
 
   @Setup
-  def setup() : Unit = {
+  def setup(): Unit = {
     val bsc = new BenchmarkContext()
     sc = bsc.sc
     fspath = bsc.fspath
-
   }
 
   @TearDown
-  def teardown() : Unit = sc.sparkContext.stop()
+  def teardown(): Unit = sc.sparkContext.stop()
 
   @Benchmark
-  def runMCC: Array[((String, Double), (String, Double), Int)] = {
-
-
-
+  def runMCC(): Array[((String, Double), (String, Double), Int)] = {
     /**
      * Ingest the input file and construct the SRDD.
      * For MCC the sources are used to map date-indexes.
@@ -177,8 +173,8 @@ class MCCBenchMark {
           }
         }
 
-        for (row <- 0 until product.rows) {
-          for (col <- 0 until product.cols) {
+        for (row <- 0 to product.rows - 1) {
+          for (col <- 0 to product.cols - 1) {
             /** Find non-zero points in product array */
             if (product(row, col) != 0.0) {
               /** save components ids */
@@ -199,7 +195,7 @@ class MCCBenchMark {
          * between those two components.
          */
         var overlappedMap = overlappedPairsList.groupBy(identity).mapValues(_.size)
-        // println(s"Overlap Map ${overlappedMap.size}")
+        println(s"Overlap Map ${overlappedMap.size}")
 
         /**
          * Once the overlapped pairs have been computed, eliminate all duplicates
@@ -208,10 +204,10 @@ class MCCBenchMark {
          * consists of unique tuples.
          */
         val edgesSet = overlappedPairsList.toSet
-        // println(s"Overlap SEt ${edgesSet.size}  : ") // for debugging
+        println(s"Overlap SEt ${edgesSet.size}  : ") // for debugging
 
         val edges = edgesSet.map({ case (c1, c2) => ((t1.metaData("FRAME"), c1), (t2.metaData("FRAME"), c2)) })
-        // println(s"Edges ${edges.size} ") // for debugging
+        println(s"Edges ${edges.size} ") // for debugging
       val filtered = edges.filter({
         case ((frameId1, compId1), (frameId2, compId2)) =>
           val (area1, max1, min1) = areaMinMaxTable(frameId1 + ":" + compId1)
@@ -245,24 +241,24 @@ class MCCBenchMark {
         filtered.foreach(edge => {
           val key = (edge._1._2, edge._2._2)
           if(overlappedMap.contains(key)) {
-            edgeList += ((edge._1, edge._2, overlappedMap(key)))
+            edgeList += ((edge._1, edge._2, overlappedMap.get(key).get))
           }
         })
-//        println(s"edgeList Map filetered ${edgeList.size}: $edgeList")
-//        println(s"filtered Map ${filtered.size}")
+        println(s"edgeList Map filetered ${edgeList.size}: $edgeList")
+        println(s"filtered Map ${filtered.size}")
         edgeList
     })
 
-    /**
-     * Collect the edges of the form ((String, Double), (String, Double))
-     * From the edges collect all used vertices.
-     * Repeated vertices are eliminated due to the set conversion.
-     *
-     * @todo Make a vertex be of the form
-     * ((frameId, componentId), area, min, max)
-     * to also store area, min, max at the end of MCC.
-     */
-    componentFrameRDD.collect()
-  }
+  /**
+   * Collect the edges of the form ((String, Double), (String, Double))
+   * From the edges collect all used vertices.
+   * Repeated vertices are eliminated due to the set conversion.
+   *
+   * @todo Make a vertex be of the form
+   *       ((frameId, componentId), area, min, max)
+   *       to also store area, min, max at the end of MCC.
+   */
+  componentFrameRDD.collect()
+}
 
 }
