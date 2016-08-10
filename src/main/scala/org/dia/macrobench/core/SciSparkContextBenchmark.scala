@@ -51,7 +51,7 @@ class SciSparkContextBenchmark {
 
   @Benchmark
   def readDFS: Long = {
-    sc.NetcdfDFSFile(fspath + directory, List("T2M")).count()
+    sc.NetcdfDFSFile(fspath + directory, List("ch4")).count()
   }
 
 }
