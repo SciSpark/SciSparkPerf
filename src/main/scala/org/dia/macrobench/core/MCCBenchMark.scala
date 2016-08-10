@@ -53,10 +53,8 @@ class MCCBenchMark {
 
   @Benchmark
   def runMCC: Array[((String, Double), (String, Double), Int)] = {
-    val variable = "ch4"
-    val maxAreaOverlapThreshold = 0.66
-    val minAreaOverlapThreshold = 0.50
-    val minArea = 10000
+
+
 
     /**
      * Ingest the input file and construct the SRDD.
@@ -91,7 +89,7 @@ class MCCBenchMark {
      * (N*, (N+1)*) which achieves the consecutive pairwise grouping
      * of frames.
      */
-    val filtered = labeled.map(p => p(variable) <= 241.0)
+    val filtered = labeled.map(p => p("ch4") <= 241.0)
     val consecFrames = filtered.flatMap(p => {
       List((p.metaData("FRAME").toInt, p), (p.metaData("FRAME").toInt + 1, p))
     }).groupBy(_._1)
@@ -100,7 +98,6 @@ class MCCBenchMark {
       .map(p => p.sortBy(_.metaData("FRAME").toInt))
       .map(p => (p(0), p(1)))
 
-    val debug = consecFrames.collect()
     /**
      * Core MCC
      * For each consecutive frame pair, find it's components.
@@ -110,6 +107,9 @@ class MCCBenchMark {
      */
     val componentFrameRDD = consecFrames.flatMap({
       case (t1, t2) =>
+        val maxAreaOverlapThreshold = 0.66
+        val minAreaOverlapThreshold = 0.50
+        val minArea = 10000
         /**
          * First label the connected components in each pair.
          * The following example illustrates labeling.
