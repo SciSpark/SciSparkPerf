@@ -80,11 +80,8 @@ The following instructions detail how to run the benchmarking suite in clustered
    This can usually be found (if mesos is installed correctly) in /usr/local/lib/libmesos.s
    Otherwise it can be found in /MESOS_HOME/build/src/.libs/libmesos.so
    
-8. Find where your SciSpark.jar is and take note of its path as follows /path_to_SciSpark/target/scala-2.10/SciSpark.jar.
 
-9. Add the jar path as the scispark.jar property in the Properties file.
-
-10. To run the suite execute
+9. To run the suite execute
     ```
     ./run.sh
     ```

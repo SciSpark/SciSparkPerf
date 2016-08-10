@@ -6,6 +6,4 @@ spark.cores.max       1
 
 spark.executor.uri    _
 
-scispark.jar          _
-
 spark.executor.memory 1g

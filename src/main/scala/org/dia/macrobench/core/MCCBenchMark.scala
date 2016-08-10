@@ -51,6 +51,11 @@ class MCCBenchMark {
   def teardown(): Unit = sc.sparkContext.stop()
 
   @Benchmark
+  def runSlidingMCC(): Array[((String, Double), (String, Double), Int)] = {
+    org.dia.algorithms.MCC.runSlidingMCC(sc, fspath + directory)
+  }
+
+  @Benchmark
   def runMCC(): Array[((String, Double), (String, Double), Int)] = {
     org.dia.algorithms.MCC.runMCC(sc, fspath + directory)
   }
