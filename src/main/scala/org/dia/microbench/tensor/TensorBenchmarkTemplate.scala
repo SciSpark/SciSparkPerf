@@ -1,7 +1,26 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.dia.microbench.tensor
 
-import org.openjdk.jmh.annotations._
 import java.util.concurrent.TimeUnit
+
+import org.openjdk.jmh.annotations._
 
 import org.dia.tensors.AbstractTensor
 
@@ -13,7 +32,7 @@ import org.dia.tensors.AbstractTensor
 @State(Scope.Thread)
 abstract class TensorBenchmarkTemplate extends InstantiateBenchmarkTemplate {
 
-  @Param(Array("500", "1000", "1500", "2000", "2500", "3000", "3500", "4000"))
+  @Param(Array("500", "1000", "1500", "2000", "2500"))
   var dim: Int = _
 
   var a : AbstractTensor = _
@@ -21,13 +40,12 @@ abstract class TensorBenchmarkTemplate extends InstantiateBenchmarkTemplate {
   var array : Array[Double] = _
 
   @Setup
-  def init() = {
+  def init(): Unit = {
     array = (0d to dim * dim by 1d).toArray
   }
 
   @Setup
-  def setup():  Unit
-
+  def setup(): Unit
 
 
   @Benchmark

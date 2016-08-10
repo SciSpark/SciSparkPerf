@@ -1,2 +1,11 @@
-src/main/resources/
-local[*]
+fs.base.path          src/main/resources/
+
+spark.master          local[*]
+
+spark.cores.max       1
+
+spark.executor.uri    _
+
+scispark.jar          _
+
+spark.executor.memory 1g

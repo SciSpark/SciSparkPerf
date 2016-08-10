@@ -15,43 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.dia.macrobench.core
 
-import java.util.concurrent.TimeUnit
-
-import org.openjdk.jmh.annotations._
+import org.apache.spark.{SparkConf, SparkContext}
 
 import org.dia.core.SciSparkContext
 
+class BenchmarkContext {
+  val properties = scala.io.Source.fromFile("Properties").mkString.split("\n").filter(p => p != "")
+  val properties_map = properties.map(p => p.split(" +")).map(p => (p(0), p(1))).toMap
 
-@BenchmarkMode(Array(Mode.Throughput, Mode.AverageTime))
-@OutputTimeUnit(TimeUnit.SECONDS)
-@Warmup(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
-@Fork(1)
-@State(Scope.Thread)
-class SciSparkContextBenchmark {
 
-  @Param(Array("100mb", "1gb", "10gb", "100gb"))
-  var directory : String = _
+  var fspath = properties_map("fs.base.path")
+  var cxtURI = properties_map("spark.master")
 
-  var sc : SciSparkContext = _
-  var fspath : String = _
+  val sparkConf = new SparkConf()
+    .setMaster(cxtURI)
+    .setAppName("SciSparkContextBenchmark")
+    .set("spark.executor.uri", properties_map("spark.executor.uri"))
+    .set("spark.cores.max", properties_map("spark.cores.max"))
+    .set("spark.executor.memory", properties_map("spark.executor.memory"))
 
-  @Setup
-  def setup() : Unit = {
-    val bsc = new BenchmarkContext()
-    sc = bsc.sc
-    fspath = bsc.fspath
-  }
+  val SparkContext = new SparkContext(sparkConf)
 
-  @TearDown
-  def teardown() : Unit = sc.sparkContext.stop()
+  SparkContext.addJar(properties_map("scispark.jar"))
 
-  @Benchmark
-  def readDFS: Long = {
-    sc.NetcdfDFSFile(fspath + directory, List("T2M")).count()
-  }
+  var sc : SciSparkContext = new SciSparkContext(SparkContext)
 
 }
