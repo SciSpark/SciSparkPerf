@@ -34,7 +34,7 @@ import org.dia.core.SciSparkContext
 @Fork(1)
 @State(Scope.Thread)
 class MCCBenchMark {
-  @Param(Array("100mb", "1gb", "10gb", "100gb"))
+  @Param(Array("100mb/", "1gb/", "10gb/", "100gb/"))
   var directory: String = _
 
   var sc: SciSparkContext = _

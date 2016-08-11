@@ -33,7 +33,7 @@ import org.dia.core.SciSparkContext
 @State(Scope.Thread)
 class SciSparkContextBenchmark {
 
-  @Param(Array("100mb", "1gb", "10gb", "100gb"))
+  @Param(Array("100mb/", "1gb/", "10gb/", "100gb/"))
   var directory : String = _
 
   var sc : SciSparkContext = _
