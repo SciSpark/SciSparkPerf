@@ -50,8 +50,12 @@ class SciSparkContextBenchmark {
   def teardown() : Unit = sc.sparkContext.stop()
 
   @Benchmark
-  def readDFS: Long = {
+  def NetcdfDFSFile(): Long = {
     sc.NetcdfDFSFile(fspath + directory, List("ch4")).count()
   }
 
+  @Benchmark
+  def NetcdfRandomAccessDatasets(): Long = {
+    sc.NetcdfRandomAccessDatasets(fspath + directory, List("ch4")).count()
+  }
 }
