@@ -52,6 +52,9 @@ abstract class TensorBenchmarkTemplate extends InstantiateBenchmarkTemplate {
   def element_wise_sub: AbstractTensor = a - b
 
   @Benchmark
+  def element_wise_sub_inplace: AbstractTensor = a -= b
+
+  @Benchmark
   def matrix_wise_dot: AbstractTensor = a ** b
 
   @Benchmark
