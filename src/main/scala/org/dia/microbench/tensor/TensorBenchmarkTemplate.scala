@@ -24,10 +24,10 @@ import org.openjdk.jmh.annotations._
 
 import org.dia.tensors.AbstractTensor
 
-@BenchmarkMode(Array(Mode.All))
+@BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 10, time = 1, timeUnit = TimeUnit.MILLISECONDS)
+@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.MILLISECONDS)
 @Fork(1)
 @State(Scope.Thread)
 abstract class TensorBenchmarkTemplate extends InstantiateBenchmarkTemplate {

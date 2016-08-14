@@ -27,7 +27,7 @@ import org.dia.core.SciSparkContext
 
 object MCC {
 
-  def runSlidingMCC(sc: SciSparkContext, path: String): Array[((String, Double), (String, Double), Int)] = {
+  def runSortedSlidingMCC(sc: SciSparkContext, path: String): Array[((String, Double), (String, Double), Int)] = {
     /**
      * Ingest the input file and construct the SRDD.
      * For MCC the sources are used to map date-indexes.
@@ -62,7 +62,7 @@ object MCC {
      * of frames.
      */
     val filtered = labeled.map(p => p("ch4") <= 241.0)
-    val consecFrames = filtered.sortBy(p => p.metaData("FRAME"))
+    val consecFrames = filtered.sortBy(p => p.metaData("FRAME").toInt)
                                .sliding(2)
                                .map(p => (p(0), p(1)))
 
@@ -229,7 +229,7 @@ object MCC {
     componentFrameRDD.collect()
   }
 
-  def runMCC(sc: SciSparkContext, path: String): Array[((String, Double), (String, Double), Int)] = {
+  def runSortedGroupByMCC(sc: SciSparkContext, path: String): Array[((String, Double), (String, Double), Int)] = {
     /**
      * Ingest the input file and construct the SRDD.
      * For MCC the sources are used to map date-indexes.
@@ -264,13 +264,13 @@ object MCC {
      * of frames.
      */
     val filtered = labeled.map(p => p("ch4") <= 241.0)
-    val consecFrames = filtered.flatMap(p => {
-      List((p.metaData("FRAME").toInt, p), (p.metaData("FRAME").toInt + 1, p))
-    }).groupBy(_._1)
-      .map(p => p._2.map(e => e._2).toList)
-      .filter(p => p.size > 1)
-      .map(p => p.sortBy(_.metaData("FRAME").toInt))
-      .map(p => (p(0), p(1)))
+    val consecFrames = filtered.sortBy(p => p.metaData("FRAME").toInt)
+                               .zipWithIndex()
+                               .flatMap({ case(sciT, indx) => List((indx, sciT), (indx + 1, sciT))})
+                               .groupByKey()
+                               .filter({ case(_, sciTs) => sciTs.size > 1})
+                               .map({ case(_, sciTs) => sciTs.toList.sortBy(p => p.metaData("FRAME").toInt)})
+                               .map(sciTs => (sciTs(0), sciTs(1)))
 
     /**
      * Core MCC

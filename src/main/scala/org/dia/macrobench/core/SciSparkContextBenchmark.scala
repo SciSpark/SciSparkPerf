@@ -25,10 +25,10 @@ import org.openjdk.jmh.annotations._
 import org.dia.core.SciSparkContext
 
 
-@BenchmarkMode(Array(Mode.Throughput, Mode.AverageTime))
+@BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Warmup(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 6, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @State(Scope.Thread)
 class SciSparkContextBenchmark {
