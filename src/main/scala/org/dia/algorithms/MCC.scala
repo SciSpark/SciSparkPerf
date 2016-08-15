@@ -38,7 +38,7 @@ object MCC {
      * Note if no HDFS path is given, then randomly generated matrices are used.
      *
      */
-    val sRDD = sc.NetcdfDFSFile(path, List("ch4"))
+    val sRDD = sc.NetcdfDFSFile(path, List("ch4"), 100)
     val labeled = sRDD.map(p => {
       val source = p.metaData("SOURCE").split("/").last.split("_")(1)
       val FrameID = source.toInt
@@ -240,7 +240,7 @@ object MCC {
      * Note if no HDFS path is given, then randomly generated matrices are used.
      *
      */
-    val sRDD = sc.NetcdfDFSFile(path, List("ch4"))
+    val sRDD = sc.NetcdfDFSFile(path, List("ch4"), 100)
     val labeled = sRDD.map(p => {
       val source = p.metaData("SOURCE").split("/").last.split("_")(1)
       val FrameID = source.toInt
