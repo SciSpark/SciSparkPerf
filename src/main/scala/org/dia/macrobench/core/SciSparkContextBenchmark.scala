@@ -41,16 +41,16 @@ class SciSparkContextBenchmark {
 
   @Benchmark
   def SciDatasets(): Long = {
-    sc.sciDatasets(fspath + directory, List("ch4")).count()
+    sc.sciDatasets(fspath + directory, List("ch4"), BenchmarkContext.partitionCount).count()
   }
 
   @Benchmark
   def NetcdfDFSFiles(): Long = {
-    sc.NetcdfDFSFiles(fspath + directory, List("ch4")).count()
+    sc.NetcdfDFSFiles(fspath + directory, List("ch4"), BenchmarkContext.partitionCount).count()
   }
 
   @Benchmark
   def NetcdfRandomAccessDatasets(): Long = {
-    sc.NetcdfRandomAccessDatasets(fspath + directory, List("ch4")).count()
+    sc.NetcdfRandomAccessDatasets(fspath + directory, List("ch4"), BenchmarkContext.partitionCount).count()
   }
 }

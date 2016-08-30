@@ -43,7 +43,7 @@ class SRDDFunctionsBenchmark {
 
   @Setup
   def setup() : Unit = {
-    srdd = sc.sciDatasets(fspath + directory, List("ch4"))
+    srdd = sc.sciDatasets(fspath + directory, List("ch4"), BenchmarkContext.partitionCount)
       .map(p => p("FRAME") = p.datasetName.split("_")(1))
   }
 

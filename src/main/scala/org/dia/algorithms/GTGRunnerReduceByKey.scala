@@ -29,7 +29,7 @@ class GTGRunnerReduceByKey(override val masterURL: String,
   extends GTGRunner(masterURL, paths, varName, partitions) {
 
   override def pairConsecutiveFrames(sRDD: RDD[SciDataset]): RDD[(SciDataset, SciDataset)] = {
-    sRDD.sortBy(p => p.attr("FRAME").toInt, true, org.dia.macrobench.core.BenchmarkContext.partitionCount)
+    sRDD.sortBy(p => p.attr("FRAME").toInt)
       .zipWithIndex()
       .flatMap({ case (sciD, indx) => List((indx, List(sciD)), (indx + 1, List(sciD))) })
       .reduceByKey(_ ++ _)

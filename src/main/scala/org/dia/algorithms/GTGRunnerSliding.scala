@@ -30,7 +30,7 @@ class GTGRunnerSliding(override val masterURL: String,
   extends GTGRunner(masterURL, paths, varName, partitions) {
 
   override def pairConsecutiveFrames(sRDD: RDD[SciDataset]): RDD[(SciDataset, SciDataset)] = {
-    sRDD.sortBy(p => p.attr("FRAME").toInt, true, org.dia.macrobench.core.BenchmarkContext.partitionCount)
+    sRDD.sortBy(p => p.attr("FRAME").toInt)
       .sliding(2)
       .map(p => (p(0), p(1)))
   }
