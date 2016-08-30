@@ -19,11 +19,10 @@
 package org.dia.algorithms
 
 import scala.collection.mutable
-
 import org.apache.spark.mllib.rdd.RDDFunctions._
-
 import org.dia.algorithms.mcc.{GTGRunner, MCCOps}
 import org.dia.core.SciSparkContext
+import org.dia.macrobench.core.BenchmarkContext
 
 object MCC {
 
@@ -31,7 +30,7 @@ object MCC {
 
   def runGroupByKeyMCC(sc: SciSparkContext, path: String): Unit = {
     val runner = new GTGRunnerGroupByKey("doesn'tmatter", path, "ch4", 1)
-    val sRDD = sc.sciDatasets(path, List("ch4"))
+    val sRDD = sc.sciDatasets(path, List("ch4")).repartition(BenchmarkContext.partitionCount)
     /**
      * Collect lat and lon arrays
      */
@@ -78,7 +77,7 @@ object MCC {
 
   def runSortedSlidingMCC(sc: SciSparkContext, path: String): Unit = {
     val runner = new GTGRunnerSliding("doesn'tmatter", path, "ch4", 1)
-    val sRDD = sc.sciDatasets(path, List("ch4"))
+    val sRDD = sc.sciDatasets(path, List("ch4")).repartition(BenchmarkContext.partitionCount)
     /**
      * Collect lat and lon arrays
      */
@@ -124,7 +123,7 @@ object MCC {
 
   def runReduceByKeyMCC(sc: SciSparkContext, path: String): Unit = {
     val runner = new GTGRunnerReduceByKey("doesn'tmatter", path, "ch4", 1)
-    val sRDD = sc.sciDatasets(path, List("ch4"))
+    val sRDD = sc.sciDatasets(path, List("ch4")).repartition(BenchmarkContext.partitionCount)
     /**
      * Collect lat and lon arrays
      */
