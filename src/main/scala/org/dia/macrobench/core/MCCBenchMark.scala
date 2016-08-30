@@ -29,26 +29,16 @@ import org.dia.core.SciSparkContext
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @State(Scope.Thread)
 class MCCBenchMark {
   @Param(Array("1gb/", "10gb/", "100gb/", "1000gb/"))
   var directory: String = _
 
-  var sc: SciSparkContext = _
-  var fspath: String = _
-
-  @Setup
-  def setup(): Unit = {
-    val bsc = new BenchmarkContext()
-    sc = bsc.sc
-    fspath = bsc.fspath
-  }
-
-  @TearDown
-  def teardown(): Unit = sc.sparkContext.stop()
+  var sc: SciSparkContext = BenchmarkContext.sc
+  var fspath: String = BenchmarkContext.fspath
 
   @Benchmark
   def runSlidingMCC(): Unit = {

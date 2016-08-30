@@ -20,14 +20,15 @@ package org.dia.macrobench.core
 import java.util.concurrent.TimeUnit
 
 import org.apache.spark.rdd.RDD
+import org.openjdk.jmh.annotations._
+
 import org.dia.core.{SciDataset, SciSparkContext, Variable}
 import org.dia.core.SRDDFunctions._
-import org.openjdk.jmh.annotations._
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @State(Scope.Thread)
 class SRDDFunctionsBenchmark {
@@ -35,15 +36,13 @@ class SRDDFunctionsBenchmark {
   @Param(Array("1gb/", "10gb/", "100gb/", "1000gb/"))
   var directory : String = _
 
-  var sc : SciSparkContext = _
-  var fspath : String = _
+  var sc : SciSparkContext = BenchmarkContext.sc
+  var fspath : String = BenchmarkContext.fspath
 
   var srdd : RDD[SciDataset] = _
+
   @Setup
   def setup() : Unit = {
-    val bsc = new BenchmarkContext()
-    sc = bsc.sc
-    fspath = bsc.fspath
     srdd = sc.sciDatasets(fspath + directory, List("ch4"))
       .map(p => p("FRAME") = p.datasetName.split("_")(1))
   }

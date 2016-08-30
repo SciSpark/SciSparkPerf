@@ -21,7 +21,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 import org.dia.core.SciSparkContext
 
-class BenchmarkContext {
+object BenchmarkContext {
   val properties = scala.io.Source.fromFile("Properties").mkString.split("\n").filter(p => p != "")
   val properties_map = properties.map(p => p.split(" +")).map(p => (p(0), p(1))).toMap
 
@@ -37,10 +37,6 @@ class BenchmarkContext {
     .set("spark.cores.max", properties_map("spark.cores.max"))
     .set("spark.executor.memory", properties_map("spark.executor.memory"))
 
-  val SparkContext = new SparkContext(sparkConf)
-
-  SparkContext.addJar("target/scala-2.11/SciSparkPerf.jar")
-
-  var sc : SciSparkContext = new SciSparkContext(SparkContext)
-
+  var sc : SciSparkContext = new SciSparkContext(sparkConf)
+  sc.sparkContext.addJar("target/scala-2.11/SciSparkPerf.jar")
 }
