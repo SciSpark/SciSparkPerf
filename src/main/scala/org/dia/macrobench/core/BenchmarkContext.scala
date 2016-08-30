@@ -32,6 +32,7 @@ class BenchmarkContext {
   val sparkConf = new SparkConf()
     .setMaster(cxtURI)
     .setAppName("SciSparkContextBenchmark")
+    .set("spark.mesos.coarse", "true")
     .set("spark.executor.uri", properties_map("spark.executor.uri"))
     .set("spark.cores.max", properties_map("spark.cores.max"))
     .set("spark.executor.memory", properties_map("spark.executor.memory"))
