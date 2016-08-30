@@ -131,7 +131,6 @@ object MCC {
     val sampleDataset = sRDD.take(1)(0)
 //    val lon = sampleDataset("longitude").data()
 //    val lat = sampleDataset("latitude").data()
-
     /**
      * Record the frame Number in each SciTensor
      */

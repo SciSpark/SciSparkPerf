@@ -18,9 +18,10 @@
 package org.dia.macrobench.core
 
 import org.apache.spark.{SparkConf, SparkContext}
-
 import org.dia.core.SciSparkContext
+import org.openjdk.jmh.annotations.{Scope, State}
 
+@State(Scope.Benchmark)
 object BenchmarkContext {
   val properties = scala.io.Source.fromFile("Properties").mkString.split("\n").filter(p => p != "")
   val properties_map = properties.map(p => p.split(" +")).map(p => (p(0), p(1))).toMap
