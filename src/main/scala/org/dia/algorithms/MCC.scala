@@ -123,7 +123,7 @@ object MCC {
   }
 
   def runReduceByKeyMCC(sc: SciSparkContext, path: String): Unit = {
-    val runner = new GTGRunner("doesn'tmatter", path, "ch4", 1)
+    val runner = new GTGRunnerReduceByKey("doesn'tmatter", path, "ch4", 1)
     val sRDD = sc.sciDatasets(path, List("ch4"))
     /**
      * Collect lat and lon arrays

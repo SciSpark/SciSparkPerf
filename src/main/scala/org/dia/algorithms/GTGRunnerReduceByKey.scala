@@ -17,22 +17,25 @@
  */
 package org.dia.algorithms
 
-import org.apache.spark.rdd.RDD
 import org.apache.spark.mllib.rdd.RDDFunctions._
-
+import org.apache.spark.rdd.RDD
 import org.dia.algorithms.mcc.GTGRunner
 import org.dia.core.SciDataset
 
-class GTGRunnerSliding(override val masterURL: String,
-                       override val paths: String,
-                       override val varName: String,
-                       override val partitions: Int)
+class GTGRunnerReduceByKey(override val masterURL: String,
+                          override val paths: String,
+                          override val varName: String,
+                          override val partitions: Int)
   extends GTGRunner(masterURL, paths, varName, partitions) {
 
   override def pairConsecutiveFrames(sRDD: RDD[SciDataset]): RDD[(SciDataset, SciDataset)] = {
-    sRDD.sortBy(p => p.attr("FRAME").toInt, true, org.dia.macrobench.core.BenchmarkContext.partitionCount)
-      .sliding(2)
-      .map(p => (p(0), p(1)))
+    val k = sRDD.sortBy(p => p.attr("FRAME").toInt, true, org.dia.macrobench.core.BenchmarkContext.partitionCount)
+      .zipWithIndex()
+      .flatMap({ case (sciD, indx) => List((indx, List(sciD)), (indx + 1, List(sciD))) })
+      .reduceByKey(_ ++ _)
+      .filter({ case (_, sciDs) => sciDs.size == 2 })
+      .map({ case (_, sciDs) => sciDs.toList.sortBy(p => p.attr("FRAME").toInt) })
+      .map(sciDs => (sciDs(0), sciDs(1)))
   }
 
 }
