@@ -51,7 +51,7 @@ class SRDDFunctionsBenchmark {
   def teardown() : Unit = sc.sparkContext.stop()
 
   @Benchmark
-  def repartitionBySpace(): RDD[Variable] = {
-    srdd.repartitionBySpace("ch4", p => p.attr("FRAME").toInt, 20, 20)
+  def repartitionBySpace(): Long = {
+    srdd.repartitionBySpace("ch4", p => p.attr("FRAME").toInt, 20, 20).count
   }
 }
