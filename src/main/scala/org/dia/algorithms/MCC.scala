@@ -31,13 +31,13 @@ object MCC {
 
   def runGroupByKeyMCC(sc: SciSparkContext, path: String): Unit = {
     val runner = new GTGRunnerGroupByKey("doesn'tmatter", path, "ch4", 1)
-    val sRDD = sc.sciDatasets(path, List("ch4", "longitude", "latitude"))
+    val sRDD = sc.sciDatasets(path, List("ch4"))
     /**
      * Collect lat and lon arrays
      */
     val sampleDataset = sRDD.take(1)(0)
-    val lon = sampleDataset("longitude").data()
-    val lat = sampleDataset("latitude").data()
+//    val lon = sampleDataset("longitude").data()
+//    val lat = sampleDataset("latitude").data()
 
     /**
      * Record the frame Number in each SciTensor
@@ -69,22 +69,22 @@ object MCC {
      * Collect the edgeList and construct NodeMap
      */
     val MCCEdgeList = edgeListRDD.collect()
-    val MCCNodeMap = runner.createNodeMapFromEdgeList(MCCEdgeList, lat, lon)
-
-    logger.info("NUM VERTICES : " + MCCNodeMap.size + "\n")
-    logger.info("NUM EDGES : " + MCCEdgeList.size + "\n")
+//    val MCCNodeMap = runner.createNodeMapFromEdgeList(MCCEdgeList, lat, lon)
+//
+//    logger.info("NUM VERTICES : " + MCCNodeMap.size + "\n")
+//    logger.info("NUM EDGES : " + MCCEdgeList.size + "\n")
   }
 
 
   def runSortedSlidingMCC(sc: SciSparkContext, path: String): Unit = {
     val runner = new GTGRunnerSliding("doesn'tmatter", path, "ch4", 1)
-    val sRDD = sc.sciDatasets(path, List("ch4", "longitude", "latitude"))
+    val sRDD = sc.sciDatasets(path, List("ch4"))
     /**
      * Collect lat and lon arrays
      */
     val sampleDataset = sRDD.take(1)(0)
-    val lon = sampleDataset("longitude").data()
-    val lat = sampleDataset("latitude").data()
+//    val lon = sampleDataset("longitude").data()
+//    val lat = sampleDataset("latitude").data()
 
     /**
      * Record the frame Number in each SciTensor
@@ -116,21 +116,21 @@ object MCC {
      * Collect the edgeList and construct NodeMap
      */
     val MCCEdgeList = edgeListRDD.collect()
-    val MCCNodeMap = runner.createNodeMapFromEdgeList(MCCEdgeList, lat, lon)
-
-    logger.info("NUM VERTICES : " + MCCNodeMap.size + "\n")
-    logger.info("NUM EDGES : " + MCCEdgeList.size + "\n")
+//    val MCCNodeMap = runner.createNodeMapFromEdgeList(MCCEdgeList, lat, lon)
+//
+//    logger.info("NUM VERTICES : " + MCCNodeMap.size + "\n")
+//    logger.info("NUM EDGES : " + MCCEdgeList.size + "\n")
   }
 
   def runReduceByKeyMCC(sc: SciSparkContext, path: String): Unit = {
     val runner = new GTGRunner("doesn'tmatter", path, "ch4", 1)
-    val sRDD = sc.sciDatasets(path, List("ch4", "longitude", "latitude"))
+    val sRDD = sc.sciDatasets(path, List("ch4"))
     /**
      * Collect lat and lon arrays
      */
     val sampleDataset = sRDD.take(1)(0)
-    val lon = sampleDataset("longitude").data()
-    val lat = sampleDataset("latitude").data()
+//    val lon = sampleDataset("longitude").data()
+//    val lat = sampleDataset("latitude").data()
 
     /**
      * Record the frame Number in each SciTensor
@@ -162,10 +162,10 @@ object MCC {
      * Collect the edgeList and construct NodeMap
      */
     val MCCEdgeList = edgeListRDD.collect()
-    val MCCNodeMap = runner.createNodeMapFromEdgeList(MCCEdgeList, lat, lon)
-
-    logger.info("NUM VERTICES : " + MCCNodeMap.size + "\n")
-    logger.info("NUM EDGES : " + MCCEdgeList.size + "\n")
+//    val MCCNodeMap = runner.createNodeMapFromEdgeList(MCCEdgeList, lat, lon)
+//
+//    logger.info("NUM VERTICES : " + MCCNodeMap.size + "\n")
+//    logger.info("NUM EDGES : " + MCCEdgeList.size + "\n")
   }
 
 }
