@@ -2,7 +2,7 @@ fs.base.path          src/main/resources/
 
 spark.master          local[*]
 
-spark.cores.max       1
+spark.cores.max       8
 
 spark.executor.uri    _
 

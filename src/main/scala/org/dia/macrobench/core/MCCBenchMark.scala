@@ -29,12 +29,12 @@ import org.dia.core.SciSparkContext
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Warmup(iterations = 4, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 4, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @State(Scope.Thread)
 class MCCBenchMark {
-  @Param(Array("100mb/", "1gb/", "10gb/", "100gb/"))
+  @Param(Array("1gb/", "10gb/", "100gb/", "1000gb/"))
   var directory: String = _
 
   var sc: SciSparkContext = _
@@ -51,12 +51,17 @@ class MCCBenchMark {
   def teardown(): Unit = sc.sparkContext.stop()
 
   @Benchmark
-  def runSlidingMCC(): Array[((String, Double), (String, Double), Int)] = {
+  def runSlidingMCC(): Unit = {
     org.dia.algorithms.MCC.runSortedSlidingMCC(sc, fspath + directory)
   }
 
   @Benchmark
-  def runMCC(): Array[((String, Double), (String, Double), Int)] = {
-    org.dia.algorithms.MCC.runSortedGroupByMCC(sc, fspath + directory)
+  def runGroupByKeyMCC(): Unit = {
+    org.dia.algorithms.MCC.runGroupByKeyMCC(sc, fspath + directory)
+  }
+
+  @Benchmark
+  def runReduceByKeyMCC(): Unit = {
+    org.dia.algorithms.MCC.runReduceByKeyMCC(sc, fspath + directory)
   }
 }

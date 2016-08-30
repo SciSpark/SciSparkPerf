@@ -41,6 +41,7 @@ abstract class TensorBenchmarkTemplate extends InstantiateBenchmarkTemplate {
 
   @Setup
   def init(): Unit = {
+    print(1)
     array = (0d to dim * dim by 1d).toArray
   }
 

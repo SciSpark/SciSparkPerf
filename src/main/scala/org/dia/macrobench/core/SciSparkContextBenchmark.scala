@@ -27,13 +27,13 @@ import org.dia.core.SciSparkContext
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Warmup(iterations = 6, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @State(Scope.Thread)
 class SciSparkContextBenchmark {
 
-  @Param(Array("100mb/", "1gb/", "10gb/", "100gb/"))
+  @Param(Array("1gb/", "10gb/", "100gb/", "1000gb/"))
   var directory : String = _
 
   var sc : SciSparkContext = _
@@ -50,8 +50,13 @@ class SciSparkContextBenchmark {
   def teardown() : Unit = sc.sparkContext.stop()
 
   @Benchmark
-  def NetcdfDFSFile(): Long = {
-    sc.NetcdfDFSFile(fspath + directory, List("ch4")).count()
+  def SciDatasets(): Long = {
+    sc.sciDatasets(fspath + directory, List("ch4")).count()
+  }
+
+  @Benchmark
+  def NetcdfDFSFiles(): Long = {
+    sc.NetcdfDFSFiles(fspath + directory, List("ch4")).count()
   }
 
   @Benchmark

@@ -24,12 +24,12 @@ organization := "org.dia"
 
 version := "1.0"
 
-scalaVersion := "2.10.6"
+scalaVersion := "2.11.2"
 
 enablePlugins(JmhPlugin)
 
 libraryDependencies ++= Seq(
-  "org.dia" % "scispark_2.10" % "1.0"
+  "org.dia" %% "scispark" % "1.0"
 )
 
 assemblyMergeStrategy in assembly := {
