@@ -36,8 +36,21 @@ class SciSparkContextBenchmark {
   @Param(Array("1gb/", "10gb/", "100gb/", "1000gb/"))
   var directory : String = _
 
-  var sc : SciSparkContext = BenchmarkContext.sc
-  var fspath : String = BenchmarkContext.fspath
+  var bcont : BenchmarkContext = _
+  var sc: SciSparkContext = _
+  var fspath: String = _
+
+  @Setup(Level.Iteration)
+  def init(): Unit = {
+    bcont = new BenchmarkContext()
+    sc = bcont.sc
+    fspath = bcont.fspath
+  }
+
+  @TearDown(Level.Iteration)
+  def destroy(): Unit = {
+    sc.sparkContext.stop()
+  }
 
   @Benchmark
   def SciDatasets(): Long = {

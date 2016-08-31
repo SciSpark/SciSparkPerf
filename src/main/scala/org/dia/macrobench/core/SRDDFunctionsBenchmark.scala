@@ -36,16 +36,25 @@ class SRDDFunctionsBenchmark {
   @Param(Array("1gb/", "10gb/", "100gb/", "1000gb/"))
   var directory : String = _
 
-  var sc : SciSparkContext = BenchmarkContext.sc
-  var fspath : String = BenchmarkContext.fspath
-
+  var bcont : BenchmarkContext = _
+  var sc: SciSparkContext = _
+  var fspath: String = _
   var srdd : RDD[SciDataset] = _
 
-  @Setup
-  def setup() : Unit = {
-    srdd = sc.sciDatasets(fspath + directory, List("ch4"), BenchmarkContext.partitionCount)
+  @Setup(Level.Iteration)
+  def init(): Unit = {
+    bcont = new BenchmarkContext()
+    sc = bcont.sc
+    fspath = bcont.fspath
+    srdd = sc.sciDatasets(fspath + directory, List("ch4"), bcont.partitionCount)
       .map(p => p("FRAME") = p.datasetName.split("_")(1))
   }
+
+  @TearDown(Level.Iteration)
+  def destroy(): Unit = {
+    sc.sparkContext.stop()
+  }
+
 
   @TearDown
   def teardown() : Unit = sc.sparkContext.stop()
