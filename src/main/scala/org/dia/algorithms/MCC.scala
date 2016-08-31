@@ -28,9 +28,9 @@ object MCC {
 
   val logger = org.slf4j.LoggerFactory.getLogger(this.getClass)
 
-  def runGroupByKeyMCC(sc: SciSparkContext, path: String): Unit = {
+  def runGroupByKeyMCC(sc: SciSparkContext, path: String, partCount: Int): Unit = {
     val runner = new GTGRunnerGroupByKey("doesn'tmatter", path, "ch4", 1)
-    val sRDD = sc.sciDatasets(path, List("ch4")).repartition(BenchmarkContext.partitionCount)
+    val sRDD = sc.sciDatasets(path, List("ch4"), partCount)
     /**
      * Collect lat and lon arrays
      */
@@ -75,9 +75,9 @@ object MCC {
   }
 
 
-  def runSortedSlidingMCC(sc: SciSparkContext, path: String): Unit = {
+  def runSortedSlidingMCC(sc: SciSparkContext, path: String, partCount: Int): Unit = {
     val runner = new GTGRunnerSliding("doesn'tmatter", path, "ch4", 1)
-    val sRDD = sc.sciDatasets(path, List("ch4")).repartition(BenchmarkContext.partitionCount)
+    val sRDD = sc.sciDatasets(path, List("ch4"), partCount)
     /**
      * Collect lat and lon arrays
      */
@@ -121,9 +121,9 @@ object MCC {
 //    logger.info("NUM EDGES : " + MCCEdgeList.size + "\n")
   }
 
-  def runReduceByKeyMCC(sc: SciSparkContext, path: String): Unit = {
+  def runReduceByKeyMCC(sc: SciSparkContext, path: String, partCount: Int): Unit = {
     val runner = new GTGRunnerReduceByKey("doesn'tmatter", path, "ch4", 1)
-    val sRDD = sc.sciDatasets(path, List("ch4")).repartition(BenchmarkContext.partitionCount)
+    val sRDD = sc.sciDatasets(path, List("ch4"), partCount)
     /**
      * Collect lat and lon arrays
      */

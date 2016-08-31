@@ -54,16 +54,16 @@ class MCCBenchMark {
 
   @Benchmark
   def runSlidingMCC(): Unit = {
-    org.dia.algorithms.MCC.runSortedSlidingMCC(sc, fspath + directory)
+    org.dia.algorithms.MCC.runSortedSlidingMCC(sc, fspath + directory, bcont.partitionCount)
   }
 
   @Benchmark
   def runGroupByKeyMCC(): Unit = {
-    org.dia.algorithms.MCC.runGroupByKeyMCC(sc, fspath + directory)
+    org.dia.algorithms.MCC.runGroupByKeyMCC(sc, fspath + directory, bcont.partitionCount)
   }
 
   @Benchmark
   def runReduceByKeyMCC(): Unit = {
-    org.dia.algorithms.MCC.runReduceByKeyMCC(sc, fspath + directory)
+    org.dia.algorithms.MCC.runReduceByKeyMCC(sc, fspath + directory, bcont.partitionCount)
   }
 }
