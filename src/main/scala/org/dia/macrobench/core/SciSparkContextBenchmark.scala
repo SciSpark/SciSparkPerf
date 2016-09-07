@@ -50,6 +50,7 @@ class SciSparkContextBenchmark {
   @TearDown(Level.Iteration)
   def destroy(): Unit = {
     sc.sparkContext.stop()
+    java.lang.Thread.sleep(120000)
   }
 
 //  @Benchmark
