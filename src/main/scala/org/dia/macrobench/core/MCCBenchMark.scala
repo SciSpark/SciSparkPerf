@@ -21,7 +21,9 @@ package org.dia.macrobench.core
 import java.util.concurrent.TimeUnit
 
 import scala.collection.mutable
+
 import org.openjdk.jmh.annotations._
+
 import org.dia.algorithms.mcc.MCCOps
 import org.dia.core.SciSparkContext
 
@@ -32,7 +34,7 @@ import org.dia.core.SciSparkContext
 @Fork(1)
 @State(Scope.Thread)
 class MCCBenchMark {
-  @Param(Array("1gb/", "10gb/", "100gb/", "1000gb/"))
+  @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/", "1000gb/", "1500gb/", "2000gb/", "2500gb/", "3000gb"))
   var directory: String = _
 
   var bcont : BenchmarkContext = _
