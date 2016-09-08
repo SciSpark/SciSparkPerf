@@ -22,7 +22,9 @@ import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
 
-import org.dia.core.SciSparkContext
+import org.apache.spark.rdd.RDD
+
+import org.dia.core.SciDataset
 
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -36,70 +38,52 @@ class SciSparkContextBenchmark {
   @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/", "1000gb/", "1500gb/", "2000gb/", "2500gb/", "3000gb"))
   var directory : String = _
 
-  var bcont : BenchmarkContext = _
-  var sc: SciSparkContext = _
-  var fspath: String = _
+  val bcont = BenchmarkContext
+  var ssc = bcont.sc
+  var fspath: String = bcont.fspath
 
-  @Setup(Level.Iteration)
-  def init(): Unit = {
-    bcont = new BenchmarkContext()
-    sc = bcont.sc
-    fspath = bcont.fspath
-  }
+  var rdd : RDD[SciDataset] = _
 
   @TearDown(Level.Iteration)
   def destroy(): Unit = {
-    sc.sparkContext.stop()
-    java.lang.Thread.sleep(120000)
-  }
-
-//  @Benchmark
-//  def SciDatasets(): Long = {
-//    sc.sciDatasets(fspath + directory, List("ch4"), bcont.partitionCount).count()
-//  }
-
-  @Benchmark
-  def NetcdfDFSFiles(): Long = {
-    sc.netcdfDFSFiles(fspath + directory, List("square"), bcont.partitionCount).count()
+    rdd.unpersist(true)
   }
 
   @Benchmark
-  def NetcdfRandomAccessDatasets(): Long = {
-    sc.netcdfRandomAccessDatasets(fspath + directory, List("square"), bcont.partitionCount).count()
+  def NetcdfRandomAccessDatasets(): Array[Unit] = {
+    rdd = ssc.netcdfRandomAccessDatasets(fspath + directory, List("square"), bcont.partitionCount)
+    bcont.evaluate(rdd)
   }
 
   @Benchmark
-  def NetcdfDFSDatasets(): Long = {
-    sc.netcdfDFSDatasets(fspath + directory, List("square"), bcont.partitionCount).count()
+  def NetcdfDFSDatasets(): Array[Unit] = {
+    rdd = ssc.netcdfDFSDatasets(fspath + directory, List("square"), bcont.partitionCount)
+    bcont.evaluate(rdd)
+  }
+
+
+  @Benchmark
+  def TwoVarsNetcdfRandomAccessDatasets(): Array[Unit] = {
+    rdd = ssc.netcdfRandomAccessDatasets(fspath + directory, List("square", "cube"), bcont.partitionCount)
+    bcont.evaluate(rdd)
   }
 
   @Benchmark
-  def TwoVarsNetcdfDFSFiles(): Long = {
-    sc.netcdfDFSFiles(fspath + directory, List("square", "cube"), bcont.partitionCount).count()
+  def TwoVarsNetcdfDFSDatasets(): Array[Unit] = {
+    rdd = ssc.netcdfDFSDatasets(fspath + directory, List("square", "cube"), bcont.partitionCount)
+    bcont.evaluate(rdd)
+  }
+
+
+  @Benchmark
+  def AllVarsNetcdfRandomAccessDatasets(): Array[Unit] = {
+    rdd = ssc.netcdfRandomAccessDatasets(fspath + directory, Nil, bcont.partitionCount)
+    bcont.evaluate(rdd)
   }
 
   @Benchmark
-  def TwoVarsNetcdfRandomAccessDatasets(): Long = {
-    sc.netcdfRandomAccessDatasets(fspath + directory, List("square", "cube"), bcont.partitionCount).count()
-  }
-
-  @Benchmark
-  def TwoVarsNetcdfDFSDatasets(): Long = {
-    sc.netcdfDFSDatasets(fspath + directory, List("square", "cube"), bcont.partitionCount).count()
-  }
-
-  @Benchmark
-  def AllVarsNetcdfDFSFiles(): Long = {
-    sc.netcdfDFSFiles(fspath + directory, List("vector", "square", "cube", "hyperCube"), bcont.partitionCount).count()
-  }
-
-  @Benchmark
-  def AllVarsNetcdfRandomAccessDatasets(): Long = {
-    sc.netcdfRandomAccessDatasets(fspath + directory, Nil, bcont.partitionCount).count()
-  }
-
-  @Benchmark
-  def AllVarsNetcdfDFSDatasets(): Long = {
-    sc.netcdfDFSDatasets(fspath + directory, Nil, bcont.partitionCount).count()
+  def AllVarsNetcdfDFSDatasets(): Array[Unit] = {
+    rdd = ssc.netcdfDFSDatasets(fspath + directory, Nil, bcont.partitionCount)
+    bcont.evaluate(rdd)
   }
 }

@@ -37,35 +37,28 @@ class MCCBenchMark {
   @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/", "1000gb/", "1500gb/", "2000gb/", "2500gb/", "3000gb"))
   var directory: String = _
 
-  var bcont : BenchmarkContext = _
-  var sc: SciSparkContext = _
-  var fspath: String = _
+  val bcont = BenchmarkContext
+  var ssc = bcont.sc
+  var fspath: String = bcont.fspath
 
-
-  @Setup(Level.Iteration)
-  def init(): Unit = {
-    bcont = new BenchmarkContext()
-    sc = bcont.sc
-    fspath = bcont.fspath
-  }
 
   @TearDown(Level.Iteration)
   def destroy(): Unit = {
-    sc.sparkContext.stop()
+    ssc.sparkContext.stop()
   }
 
   @Benchmark
   def runSlidingMCC(): Unit = {
-    org.dia.algorithms.MCC.runSortedSlidingMCC(sc, fspath + directory, bcont.partitionCount)
+    org.dia.algorithms.MCC.runSortedSlidingMCC(ssc, fspath + directory, bcont.partitionCount)
   }
 
   @Benchmark
   def runGroupByKeyMCC(): Unit = {
-    org.dia.algorithms.MCC.runGroupByKeyMCC(sc, fspath + directory, bcont.partitionCount)
+    org.dia.algorithms.MCC.runGroupByKeyMCC(ssc, fspath + directory, bcont.partitionCount)
   }
 
   @Benchmark
   def runReduceByKeyMCC(): Unit = {
-    org.dia.algorithms.MCC.runReduceByKeyMCC(sc, fspath + directory, bcont.partitionCount)
+    org.dia.algorithms.MCC.runReduceByKeyMCC(ssc, fspath + directory, bcont.partitionCount)
   }
 }

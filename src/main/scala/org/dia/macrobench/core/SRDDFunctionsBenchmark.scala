@@ -19,8 +19,9 @@ package org.dia.macrobench.core
 
 import java.util.concurrent.TimeUnit
 
-import org.apache.spark.rdd.RDD
 import org.openjdk.jmh.annotations._
+
+import org.apache.spark.rdd.RDD
 
 import org.dia.core.{SciDataset, SciSparkContext, Variable}
 import org.dia.core.SRDDFunctions._
@@ -33,34 +34,31 @@ import org.dia.core.SRDDFunctions._
 @State(Scope.Thread)
 class SRDDFunctionsBenchmark {
 
-  @Param(Array("1gb/", "10gb/", "100gb/", "1000gb/"))
+  @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/", "1000gb/", "1500gb/", "2000gb/", "2500gb/", "3000gb"))
   var directory : String = _
 
-  var bcont : BenchmarkContext = _
-  var sc: SciSparkContext = _
-  var fspath: String = _
+  @Param(Array(50, 100, 200, 250, 500))
+  var blockSize : Int = _
+
+  val bcont = BenchmarkContext
+  val ssc = bcont.sc
+  val fspath: String = bcont.fspath
   var srdd : RDD[SciDataset] = _
 
   @Setup(Level.Iteration)
   def init(): Unit = {
-    bcont = new BenchmarkContext()
-    sc = bcont.sc
-    fspath = bcont.fspath
-    srdd = sc.sciDatasets(fspath + directory, List("ch4"), bcont.partitionCount)
+    srdd = ssc.sciDatasets(fspath + directory, List("square"), bcont.partitionCount)
       .map(p => p("FRAME") = p.datasetName.split("_")(1))
   }
 
   @TearDown(Level.Iteration)
   def destroy(): Unit = {
-    sc.sparkContext.stop()
+    srdd.unpersist(true)
   }
 
-
-  @TearDown
-  def teardown() : Unit = sc.sparkContext.stop()
-
   @Benchmark
-  def repartitionBySpace(): Long = {
-    srdd.repartitionBySpace("ch4", p => p.attr("FRAME").toInt, 20, 20).count
+  def repartitionBySpace(): Array[Unit] = {
+    val rdd = srdd.repartitionBySpace("square", p => p.attr("FRAME").toInt, blockSize, blockSize)
+    bcont.evaluate(rdd)
   }
 }

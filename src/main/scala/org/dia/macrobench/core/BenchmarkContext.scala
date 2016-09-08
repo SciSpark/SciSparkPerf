@@ -17,12 +17,15 @@
  */
 package org.dia.macrobench.core
 
-import org.apache.spark.{SparkConf, SparkContext}
-import org.dia.core.SciSparkContext
 import org.openjdk.jmh.annotations.{Scope, State}
 
+import org.apache.spark.rdd.RDD
+import org.apache.spark.SparkConf
+
+import org.dia.core.SciSparkContext
+
 @State(Scope.Benchmark)
-class BenchmarkContext {
+object BenchmarkContext {
   val properties = scala.io.Source.fromFile("Properties").mkString.split("\n").filter(p => p != "")
   val properties_map = properties.map(p => p.split(" +")).map(p => (p(0), p(1))).toMap
 
@@ -39,4 +42,11 @@ class BenchmarkContext {
 
   var sc : SciSparkContext = new SciSparkContext(sparkConf)
   sc.sparkContext.addJar("target/scala-2.11/SciSparkPerf.jar")
+
+  def evaluate[T](rdd : RDD[T]) : Array[Unit] = {
+    rdd.sparkContext.runJob(rdd, (iter : Iterator[T]) => {
+      while (iter.hasNext) iter.next()
+    })
+  }
+
 }
