@@ -37,7 +37,7 @@ class SRDDFunctionsBenchmark {
   @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/", "1000gb/", "1500gb/", "2000gb/", "2500gb/", "3000gb"))
   var directory : String = _
 
-  @Param(Array(50, 100, 200, 250, 500))
+  @Param(Array("50", "100", "200", "250", "500"))
   var blockSize : Int = _
 
   val bcont = BenchmarkContext
@@ -58,7 +58,7 @@ class SRDDFunctionsBenchmark {
 
   @Benchmark
   def repartitionBySpace(): Array[Unit] = {
-    val rdd = srdd.repartitionBySpace("square", p => p.attr("FRAME").toInt, blockSize, blockSize)
+    val rdd = srdd.repartitionBySpace("square", p => p.attr("FRAME").toInt, blockSize.toInt, blockSize.toInt)
     bcont.evaluate(rdd)
   }
 }
