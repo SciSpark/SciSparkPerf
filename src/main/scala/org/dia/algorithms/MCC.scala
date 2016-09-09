@@ -142,7 +142,7 @@ object MCC {
      * Core MCC
      */
     val edgeListRDD = runner.findEdges(consecFrames,
-      "ch4",
+      variable,
       runner.maxAreaOverlapThreshold,
       runner.minAreaOverlapThreshold,
       runner.convectiveFraction,
