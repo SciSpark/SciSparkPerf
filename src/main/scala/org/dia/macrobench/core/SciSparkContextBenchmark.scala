@@ -35,7 +35,7 @@ import org.dia.core.SciDataset
 @State(Scope.Thread)
 class SciSparkContextBenchmark {
 
-  @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/", "1000gb/", "1500gb/", "2000gb/", "2500gb/", "3000gb"))
+  @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/", "1000gb/", "2000gb/", "2500gb/", "3000gb"))
   var directory : String = _
 
   val bcont = BenchmarkContext

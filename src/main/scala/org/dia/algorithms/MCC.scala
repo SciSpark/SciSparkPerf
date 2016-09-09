@@ -18,11 +18,10 @@
 
 package org.dia.algorithms
 
-import scala.collection.mutable
-import org.apache.spark.mllib.rdd.RDDFunctions._
-import org.dia.algorithms.mcc.{GTGRunner, MCCOps}
+import org.apache.spark.rdd.RDD
+
+import org.dia.algorithms.mcc.MCCEdge
 import org.dia.core.SciSparkContext
-import org.dia.macrobench.core.BenchmarkContext
 
 object MCC {
 
@@ -121,7 +120,7 @@ object MCC {
 //    logger.info("NUM EDGES : " + MCCEdgeList.size + "\n")
   }
 
-  def runReduceByKeyMCC(sc: SciSparkContext, path: String, partCount: Int): Unit = {
+  def runReduceByKeyMCC(sc: SciSparkContext, path: String, partCount: Int): RDD[MCCEdge] = {
     val runner = new GTGRunnerReduceByKey("doesn'tmatter", path, "ch4", 1)
     val sRDD = sc.sciDatasets(path, List("ch4"), partCount)
     /**
@@ -155,11 +154,7 @@ object MCC {
       runner.convectiveFraction,
       runner.minArea,
       runner.nodeMinArea)
-
-    /**
-     * Collect the edgeList and construct NodeMap
-     */
-    val MCCEdgeList = edgeListRDD.collect()
+    edgeListRDD
 //    val MCCNodeMap = runner.createNodeMapFromEdgeList(MCCEdgeList, lat, lon)
 //
 //    logger.info("NUM VERTICES : " + MCCNodeMap.size + "\n")

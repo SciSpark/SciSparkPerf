@@ -34,7 +34,7 @@ import org.dia.core.SRDDFunctions._
 @State(Scope.Thread)
 class SRDDFunctionsBenchmark {
 
-  @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/", "1000gb/", "1500gb/", "2000gb/", "2500gb/", "3000gb"))
+  @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/"))
   var directory : String = _
 
   @Param(Array("50", "100", "200", "250", "500"))

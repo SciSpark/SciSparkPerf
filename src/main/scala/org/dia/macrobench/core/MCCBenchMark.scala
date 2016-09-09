@@ -20,45 +20,45 @@ package org.dia.macrobench.core
 
 import java.util.concurrent.TimeUnit
 
-import scala.collection.mutable
-
 import org.openjdk.jmh.annotations._
 
-import org.dia.algorithms.mcc.MCCOps
-import org.dia.core.SciSparkContext
+import org.apache.spark.rdd.RDD
+
+import org.dia.algorithms.mcc.MCCEdge
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.SECONDS)
 @Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @State(Scope.Thread)
 class MCCBenchMark {
-  @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/", "1000gb/", "1500gb/", "2000gb/", "2500gb/", "3000gb"))
+  @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/", "1000gb/", "2000gb/"))
   var directory: String = _
 
   val bcont = BenchmarkContext
   var ssc = bcont.sc
   var fspath: String = bcont.fspath
-
+  var edgeRDD : RDD[MCCEdge] = _
 
   @TearDown(Level.Iteration)
   def destroy(): Unit = {
-    ssc.sparkContext.stop()
+    edgeRDD.unpersist(true)
   }
 
-  @Benchmark
-  def runSlidingMCC(): Unit = {
-    org.dia.algorithms.MCC.runSortedSlidingMCC(ssc, fspath + directory, bcont.partitionCount)
-  }
-
-  @Benchmark
-  def runGroupByKeyMCC(): Unit = {
-    org.dia.algorithms.MCC.runGroupByKeyMCC(ssc, fspath + directory, bcont.partitionCount)
-  }
+//  @Benchmark
+//  def runSlidingMCC(): Unit = {
+//    org.dia.algorithms.MCC.runSortedSlidingMCC(ssc, fspath + directory, bcont.partitionCount)
+//  }
+//
+//  @Benchmark
+//  def runGroupByKeyMCC(): Unit = {
+//    org.dia.algorithms.MCC.runGroupByKeyMCC(ssc, fspath + directory, bcont.partitionCount)
+//  }
 
   @Benchmark
   def runReduceByKeyMCC(): Unit = {
-    org.dia.algorithms.MCC.runReduceByKeyMCC(ssc, fspath + directory, bcont.partitionCount)
+    edgeRDD = org.dia.algorithms.MCC.runReduceByKeyMCC(ssc, fspath + directory, bcont.partitionCount)
+    bcont.evaluate(edgeRDD)
   }
 }
