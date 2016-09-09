@@ -33,6 +33,7 @@ object BenchmarkContext {
   var fspath = properties_map("fs.base.path")
   var cxtURI = properties_map("spark.master")
   var partitionCount = properties_map("spark.cores.max").toInt * 3
+  val mccvar = properties_map("mcc.variable")
   val sparkConf = new SparkConf()
     .setMaster(cxtURI)
     .setAppName("SciSparkContextBenchmark")

@@ -58,7 +58,8 @@ class MCCBenchMark {
 
   @Benchmark
   def runReduceByKeyMCC(): Unit = {
-    edgeRDD = org.dia.algorithms.MCC.runReduceByKeyMCC(ssc, fspath + directory, bcont.partitionCount, "cube")
+    edgeRDD = org.dia.algorithms.MCC.runReduceByKeyMCC(ssc, fspath + directory, bcont.partitionCount, bcont.mccvar)
     bcont.evaluate(edgeRDD)
   }
+
 }
