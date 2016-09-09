@@ -28,8 +28,8 @@ import org.dia.core.SRDDFunctions._
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @State(Scope.Thread)
 class SRDDFunctionsBenchmark {
@@ -37,17 +37,18 @@ class SRDDFunctionsBenchmark {
   @Param(Array("100gb/", "200gb/", "300gb/", "400gb/", "500gb/"))
   var directory : String = _
 
-  @Param(Array("50", "100", "200", "250", "500"))
+  @Param(Array("100", "200", "250", "500"))
   var blockSize : Int = _
 
   val bcont = BenchmarkContext
   val ssc = bcont.sc
   val fspath: String = bcont.fspath
+  val srddFunctionsvar = bcont.srddfunctionsvar
   var srdd : RDD[SciDataset] = _
 
   @Setup(Level.Iteration)
   def init(): Unit = {
-    srdd = ssc.sciDatasets(fspath + directory, List("square"), bcont.partitionCount)
+    srdd = ssc.sciDatasets(fspath + directory, List(srddFunctionsvar), bcont.partitionCount)
       .map(p => p("FRAME") = p.datasetName.split("_")(1))
   }
 
@@ -58,7 +59,7 @@ class SRDDFunctionsBenchmark {
 
   @Benchmark
   def repartitionBySpace(): Array[Unit] = {
-    val rdd = srdd.repartitionBySpace("square", p => p.attr("FRAME").toInt, blockSize.toInt, blockSize.toInt)
+    val rdd = srdd.repartitionBySpace(srddFunctionsvar, p => p.attr("FRAME").toInt, blockSize.toInt, blockSize.toInt)
     bcont.evaluate(rdd)
   }
 }

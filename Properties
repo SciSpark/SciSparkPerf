@@ -7,3 +7,7 @@ spark.cores.max       8
 spark.executor.uri    _
 
 spark.executor.memory 1g
+
+mcc.variable          ch4
+
+srddfunc.variable     ch4
