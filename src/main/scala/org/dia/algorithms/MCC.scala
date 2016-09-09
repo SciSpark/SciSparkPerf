@@ -120,24 +120,18 @@ object MCC {
 //    logger.info("NUM EDGES : " + MCCEdgeList.size + "\n")
   }
 
-  def runReduceByKeyMCC(sc: SciSparkContext, path: String, partCount: Int): RDD[MCCEdge] = {
-    val runner = new GTGRunnerReduceByKey("doesn'tmatter", path, "ch4", 1)
-    val sRDD = sc.sciDatasets(path, List("ch4"), partCount)
-    /**
-     * Collect lat and lon arrays
-     */
-    val sampleDataset = sRDD.take(1)(0)
-//    val lon = sampleDataset("longitude").data()
-//    val lat = sampleDataset("latitude").data()
+  def runReduceByKeyMCC(sc: SciSparkContext, path: String, partCount: Int, variable : String = "ch4"): RDD[MCCEdge] = {
+    val runner = new GTGRunnerReduceByKey("doesn'tmatter", path, variable, 1)
+    val sRDD = sc.sciDatasets(path, List(variable), partCount)
     /**
      * Record the frame Number in each SciTensor
      */
-    val labeled = runner.recordFrameNumber(sRDD, "ch4")
+    val labeled = runner.recordFrameNumber(sRDD, variable)
 
     /**
      * Filter for temperature values under 241.0
      */
-    val filtered = labeled.map(p => p("ch4") = p("ch4") <= 241.0)
+    val filtered = labeled.map(p => p(variable) = p(variable) <= 241.0)
 
     /**
      * Pair consecutive frames
@@ -155,10 +149,6 @@ object MCC {
       runner.minArea,
       runner.nodeMinArea)
     edgeListRDD
-//    val MCCNodeMap = runner.createNodeMapFromEdgeList(MCCEdgeList, lat, lon)
-//
-//    logger.info("NUM VERTICES : " + MCCNodeMap.size + "\n")
-//    logger.info("NUM EDGES : " + MCCEdgeList.size + "\n")
   }
 
 }

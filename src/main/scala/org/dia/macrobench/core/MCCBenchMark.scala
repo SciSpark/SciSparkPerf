@@ -28,7 +28,7 @@ import org.dia.algorithms.mcc.MCCEdge
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @State(Scope.Thread)
@@ -58,7 +58,7 @@ class MCCBenchMark {
 
   @Benchmark
   def runReduceByKeyMCC(): Unit = {
-    edgeRDD = org.dia.algorithms.MCC.runReduceByKeyMCC(ssc, fspath + directory, bcont.partitionCount)
+    edgeRDD = org.dia.algorithms.MCC.runReduceByKeyMCC(ssc, fspath + directory, bcont.partitionCount, "cube")
     bcont.evaluate(edgeRDD)
   }
 }
