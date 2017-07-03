@@ -3,7 +3,7 @@ SciSparkPerf
 
 [![Join the chat at https://gitter.im/scientificspark](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/scientificspark/Lobby)
 
-#Introduction
+# Introduction
 
 SciSparkPerf is a framework used to benchmark SciSpark and it's applications.
 [SciSpark](http://esto.nasa.gov/forum/estf2015/presentations/Mattmann_S1P8_ESTF2015.pdf) is a scalable scientific processing platform that makes interactive computation and exploration possible.
@@ -17,7 +17,7 @@ SciSparkPerf uses [sbt-jmh](https://github.com/ktoso/sbt-jmh) for it's benchmark
              We would love to have your contributions as well!
 
 
-#Installation - standalone mode
+# Installation - standalone mode
 The following instructions detail how to run the benchmarking suite as-is.
 If you want to benchmark the suite in clustered mode with data on hdfs go to the cluster mode installation
 
@@ -41,7 +41,7 @@ If you want to benchmark the suite in clustered mode with data on hdfs go to the
 5. The results for each of the methods can be found in a csv file named results.csv
 
 
-#Installation - cluster mode
+# Installation - cluster mode
 The following instructions detail how to run the benchmarking suite in clustered mode.
 
 1. Follow steps 1 - 5 in the standalone mode instructions
@@ -86,35 +86,35 @@ The following instructions detail how to run the benchmarking suite in clustered
     ./run.sh
     ```
 
-#Logging
+# Logging
 
 For now we have directed all logging to log.out
 What should be seen on screen is just the JMH benchmark output.
 
-#Mesos Client Mode
+# Mesos Client Mode
 
 To learn more about the Mesos client mode visit the documentation [here](http://spark.apache.org/docs/latest/running-on-mesos.html#using-a-mesos-master-url).
 
 
-#API
+# API
 
-##Project Status
+## Project Status
 
 
 
-##Want to Use or Contribute to this Project?
+## Want to Use or Contribute to this Project?
 Contact us at [scispark-team@jpl.nasa.gov](mailto:scispark-team@jpl.nasa.gov)
 
-##Technology
+## Technology
 This project utilizes the following open-source technologies [Apache Spark][Spark] and is based on the NASA AIST14 project led by the PI [Chris Mattmann](http://github.com/chrismattmann/). The SciSpark team is at at JPL and actively working on the project.
 
-###Apache Spark
+### Apache Spark
 
 [Apache Spark][Spark] is a framework for distributed in-memory data processing. It runs locally, on an in-house or commercial cloud environment.
 
 [Spark]: https://spark.apache.org/
 
-###sbt-jmh
+### sbt-jmh
 
 [sbt-jmh](https://github.com/ktoso/sbt-jmh) is a SBT plugin for running OpenJDK JMH benchmarks.
 JMH is a Java harness for building, running, and analysing nano/micro/milli/macro benchmarks written in Java and other languages targeting the JVM.
